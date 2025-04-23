@@ -5,24 +5,62 @@ const requestListiner = (request, response) => {
 
   response.statusCode = 200;
 
-  const { method } = request;
+  const { method, url } = request;
 
-  if (method === "GET") {
-    response.end("<h1>Hallo world</h1>");
+  if (url === "/") {
+    // TODO 2: logika respons bila url bernilai '/'
+    if (method === "GET") {
+      response.end("<h1>Ini adalah halaman homepage</h1>");
+    } else {
+      response.end(
+        `<h1>Halaman tidak dapat diakses dengan ${method} request</h1>`
+      );
+    }
+  } else if (url === "/about") {
+    // TODO 3: Logika respons bila url bernilai '/about
+    if (method === "GET") {
+      // respon bila client menggunakan GET request
+      response.end("<h1>Haloo! Ini adalah halaman about</h1>");
+    } else if (method === "POST") {
+      // respon bila client menggunakan POST request
+      let body = [];
+
+      request.on("data", (chunk) => {
+        body.push(chunk);
+      });
+
+      request.on("end", () => {
+        body = Buffer.concat(body).toString();
+        const { name } = JSON.parse(body);
+        response.end(`<h1>Halo!, ${name} ini adalah halaman about</h1>`);
+      });
+    } else {
+      // respons bila client tidak menggunakan GET ataupun POST
+      response.end(
+        `<h1>Halaman tidak dapat diakses dengan ${method} request</h1>`
+      );
+    }
+  } else {
+    // TODO 1: Logika respons bila url bukan '/' atau '/about'
+    response.end("<h1>Halaman tidak ditemukan</h1>");
   }
 
-  if (method === "POST") {
-    let body = [];
-    request.on("data", (chunk) => {
-      body.push(chunk);
-    });
+  //   if (method === "GET") {
+  //     response.end("<h1>Hallo world</h1>");
+  //   }
 
-    request.on("end", () => {
-      body = Buffer.concat(body).toString();
-      const { name } = JSON.parse(body);
-      response.end(`<h1> Haii, ${name}</h1>`);
-    });
-  }
+  //   if (method === "POST") {
+  //     let body = [];
+  //     request.on("data", (chunk) => {
+  //       body.push(chunk);
+  //     });
+
+  //     request.on("end", () => {
+  //       body = Buffer.concat(body).toString();
+  //       const { name } = JSON.parse(body);
+  //       response.end(`<h1> Haii, ${name}</h1>`);
+  //     });
+  //   }
 };
 
 const server = http.createServer(requestListiner);
