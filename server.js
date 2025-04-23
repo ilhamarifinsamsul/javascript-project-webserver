@@ -4,7 +4,24 @@ const requestListiner = (request, response) => {
   response.setHeader("Content-Type", "text/html");
 
   response.statusCode = 200;
-  response.end("<h1>Hallo HTTP Server</h1>");
+
+  const { method } = request;
+
+  if (method === "GET") {
+    response.end("<h1>Hallo world</h1>");
+  }
+
+  if (method === "POST") {
+    response.end("<h1>Hai!!</h1>");
+  }
+
+  if (method === "PUT") {
+    response.end("<h1>Salamm!</h1>");
+  }
+
+  if (method === "DELETE") {
+    response.end("<h1>Bonjourr!</h1>");
+  }
 };
 
 const server = http.createServer(requestListiner);
